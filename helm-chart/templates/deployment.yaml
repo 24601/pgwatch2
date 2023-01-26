@@ -59,7 +59,7 @@ spec:
         - name: BOOTSTRAP_DATABASE
           value: {{ .Values.postgres_storage.database | default "pgwatch2_metrics"  }}
         - name: PGUSER
-          value: {{ .Values.postgresql.superuser | default "postgres" }}
+          value: {{ .Values.postgresql.superuser | default "pgwatch2" }}
         - name: PGPASSWORD
           value: {{ .Values.postgresql.password  | default "postgres" }}
         - name: PGSSL
