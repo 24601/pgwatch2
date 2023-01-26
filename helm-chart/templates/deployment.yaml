@@ -63,10 +63,7 @@ spec:
         - name: PGUSER
           value: {{ .Values.postgresql.superuser | default "postgres" }}
         - name: PGPASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.postgresql.secretname | default (printf "%s-postgresql" (include "pgwatch2.fullname" .)) }}
-              key: {{ .Values.postgresql.secretkey | default "password" }}
+          value: {{ .Values.postgresql.password  | default "postgres" }}
         - name: PGSSL
           value: {{ .Values.postgresql.ssl | default "False" | quote }}
         - name: BOOTSTRAP_TYPE
