@@ -65,7 +65,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ .Values.postgresql.secretname | default (printf "%s-postgresql" (include "pgwatch2.fullname" .)) }}
-              key: postgres-password
+              key: {{ .Values.postgresql.secretkey | default password }}
         - name: PGSSL
           value: {{ .Values.postgresql.ssl | default "False" | quote }}
         - name: BOOTSTRAP_TYPE
