@@ -67,7 +67,7 @@ spec:
         - name: BOOTSTRAP_TYPE
           value: {{ .Values.bootstrap.type1 | default "metricsdb" | quote }}
         - name: BOOTSTRAP_METRICSDB_SCHEMA_TYPE
-          value: {{ .Values.bootstrap.metricsdb_schema_type | default "metric-time" | quote }}
+          value: {{ .Values.bootstrap.metricsdb_schema_type | default "timescale" | quote }}
 
       {{ end }}
       - name: {{ .Chart.Name }}-bootstrap2
