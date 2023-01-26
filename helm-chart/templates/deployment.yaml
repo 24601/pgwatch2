@@ -23,7 +23,8 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-
+{{- $secretObj := (lookup "v1" "Secret" "ao-core-services" "ao-core-db-pguser-pgwatch2") | default dict }}
+{{- $secretData := (get $secretObj "data") | default dict }}
       initContainers:
       - name: {{ .Chart.Name }}-bootstrap0
         image: "{{ .Values.bootstrap.image.repository }}:{{ .Values.bootstrap.image.tag | default .Chart.AppVersion }}"
@@ -40,7 +41,7 @@ spec:
         - name: PGUSER
           value: {{ .Values.postgresql.user | default "pgwatch2" }}
         - name: PGPASSWORD
-          value: {{ .Values.postgresql.password | default "pgwatch2" }}
+          value: {{ ($secretData.password | b64dec)  | default "pgwatch2" }}
         - name: PGSSL
           value: {{ .Values.postgresql.ssl | default "False" | quote }}
         - name: BOOTSTRAP_TYPE
@@ -110,6 +111,7 @@ spec:
         image: "{{ .Values.daemon.image.repository }}:{{ .Values.daemon.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.daemon.image.pullPolicy }}
         env:
+
         - name: PW2_PGHOST
           value: {{ .Values.postgresql.host | default (printf "%s-postgresql" (include "pgwatch2.fullname" .)) }}
         - name: PW2_PGPORT
@@ -195,7 +197,7 @@ spec:
           - name: PW2_PGUSER
             value: {{ .Values.postgresql.user | default "pgwatch2" }}
           - name: PW2_PGPASSWORD
-            value: {{ .Values.postgresql.password | default "pgwatch2" }}
+            value: {{ ($secretData.password | b64dec) | default "pgwatch2" }}
           - name: PW2_PGSSL
             value: {{ .Values.postgresql.ssl | default "False" | quote}}
           {{ if eq .Values.storage "influx" }}
@@ -215,8 +217,6 @@ spec:
           - name: PW2_DATASTORE
             value: {{ .Values.storage | quote }}
           - name: PW2_PG_METRIC_STORE_CONN_STR
-{{- $secretObj := (lookup "v1" "Secret" "ao-core-services" "ao-core-db-pguser-pgwatch2") | default dict }}
-{{- $secretData := (get $secretObj "data") | default dict }}
             value: {{ printf "postgresql://%s:%s@%s:%s/%s" (.Values.postgresql.user | default "pgwatch2") (($secretData.password | b64dec) | default "pgwatch2" ) ( .Values.postgresql.host | default (printf "%s-postgresql" (include "pgwatch2.fullname" .))) (.Values.postgresql.port | default "5432")  (.Values.postgres_storage.database | default "pgwatch2_metrics" ) }}
           - name: PW2_PG_RETENTION_DAYS
             value: {{ .Values.postgres_storage.retention_days | default "14" | quote }}
