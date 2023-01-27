@@ -17,7 +17,7 @@ data:
       values ('{{ $db.host }}_{{ $d }}', '{{ $db.grafana_preset_metrics | default "full" }}', null, '{{ $db.host }}', '{{ $db.port | default "5432" }}', '{{ $d }}', '{{ $db.user }}', '{{ $db.password }}', '{{ $db.sslmode | default "disable" }}', false, true)
     on conflict (md_unique_name)
     do update set md_sslmode='{{ $db.sslmode | default "disable" }}', md_preset_config_name='{{ $db.grafana_preset_metrics | default "full" }}', md_config=null, md_hostname='{{ $db.host }}', md_port='{{ $db.port }}', md_dbname='{{ $d }}', md_user= '{{ $db.user }}', md_password='{{ $db.password }}', md_is_enabled=false, md_is_superuser=true;
-    update pgwatch2.monitored_db set md_is_enabled=true where md_unique_name='{{ $db.host }}_{{ $d }}';
+    update pgwatch2.monitored_db set md_is_enabled=true where md_unique_name='{{ $db.unique_name }}_{{ $d }}';
     {{- end }}
     {{- end }}
     COMMIT;
