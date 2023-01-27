@@ -27,7 +27,3 @@ dependencies:
     repository: https://grafana.github.io/helm-charts
     version: "6.28.0"
     condition: grafana.enabled
-  - name: metallb
-    repository: https://metallb.github.io/metallb
-    version: "0.12.1"
-    condition: metallb.enabled
