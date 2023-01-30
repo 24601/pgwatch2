@@ -67,7 +67,7 @@ webui:
     repository: cybertec/pgwatch2
     tag: latest
   ingress:
-    enabled: true
+    enabled: false
     # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
     # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
     # ingressClassName: nginx
@@ -116,7 +116,7 @@ grafana:
   password: pgwatch2admin # password will be auto generated if emtpy
   ingress:
     # Use webui.ingress as an example if you want to use ingress for grafana.
-    enabled: true
+    enabled: false
     hosts:
       - grafana-pgwatch2.local
   ldap:
@@ -164,39 +164,39 @@ grafana:
     dashboards:
       default_home_dashboard_path: "/tmp/dashboards/health-check.json"
     auth.ldap:
-      enabled: true
+      enabled: false
       config_file: /etc/grafana/ldap.toml
   datasources:
     datasources.yaml:
       apiVersion: 1
-      # datasources:
-      #   - name: InfluxDB_v1
-      #     type: influxdb
-      #     access: proxy
-      #     url: http://pgwatch2-influxdb:8086
-      #     isDefault: true
-      #     database: pgwatch2
-      #     user: pgwatch2
-      #     jsonData:
-      #       httpMode: GET
-      #     secureJsonData:
-      #       password: pgwatch2
+      datasources:
+        - name: InfluxDB_v1
+          type: influxdb
+          access: proxy
+          url: http://pgwatch2-influxdb:8086
+          isDefault: true
+          database: pgwatch2
+          user: pgwatch2
+          jsonData:
+            httpMode: GET
+          secureJsonData:
+            password: pgwatch2
       ## Postgresql
-      - name: Postgres
-        type: postgres
-        url: pgwatch2-postgresql:5432
-        isDefault: true
-        database: pgwatch2_metrics
-        user: *postgresuser
-        secureJsonData:
-          password: *postgrespassword
-        jsonData:
-          sslmode: 'disable' # disable/require/verify-ca/verify-full
-          maxOpenConns: 0 # Grafana v5.4+
-          maxIdleConns: 2 # Grafana v5.4+
-          connMaxLifetime: 14400 # Grafana v5.4+
-          postgresVersion: 1200 # 903=9.3, 904=9.4, 905=9.5, 906=9.6, 1000=10
-          timescaledb: false
+      # - name: Postgres
+      #   type: postgres
+      #   url: pgwatch2-postgresql:5432
+      #   isDefault: true
+      #   database: pgwatch2_metrics
+      #   user: *postgresuser
+      #   secureJsonData:
+      #     password: *postgrespassword
+      #   jsonData:
+      #     sslmode: 'disable' # disable/require/verify-ca/verify-full
+      #     maxOpenConns: 0 # Grafana v5.4+
+      #     maxIdleConns: 2 # Grafana v5.4+
+      #     connMaxLifetime: 14400 # Grafana v5.4+
+      #     postgresVersion: 1200 # 903=9.3, 904=9.4, 905=9.5, 906=9.6, 1000=10
+      #     timescaledb: false
 
   image:
     repository: grafana/grafana
